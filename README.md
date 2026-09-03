@@ -1,7 +1,7 @@
 "# Trabalho-da-Feira---Curr-culo" 
 # 📄 Feira Currículo
 
-Projeto desenvolvido em grupo pelo **3º D — Desenvolvimento de Sistemas**, durante as aulas do curso técnico.
+Projeto desenvolvido em grupo pelo **3º DS — Desenvolvimento de Sistemas**, durante as aulas do curso técnico.
 
 ## 🎯 Sobre o projeto
 
