@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<!-- Define que o documento usa HTML5 -->
+
+<html lang="pt-BR">
+<!-- Define o idioma da página -->
+
+<head>
+    <meta charset="UTF-8">
+    <!-- Permite caracteres especiais e acentos -->
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Adapta o site para celular e outras telas -->
+
+    <title>Protocolo de Currículos</title>
+    <!-- Título exibido na aba do navegador -->
+
+    <link rel="stylesheet" href="style.css">
+    <!-- Importa o arquivo CSS -->
+
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- Importa as fontes utilizadas no projeto -->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <!-- Importa a biblioteca usada para gerar PDFs -->
+
+</head>
+
+<body>
+
+<div class="app">
+<!-- Container principal do sistema -->
+
+    <div class="masthead">
+    <!-- Cabeçalho do site -->
+
+        <div class="title">Protocolo de Currículos</div>
+        <!-- Nome do sistema -->
+
+        <div class="proto">
+            MOD. <b id="proto-model">—</b><br>
+            ETEC · CADASTRO
+        </div>
+        <!-- Mostra o modelo selecionado -->
+
+    </div>
+
+    <section id="screen-welcome" class="screen active">
+    <!-- Tela inicial de escolha do modelo -->
+
+        <h1 class="hero-title">Protocolo de Currículos</h1>
+        <p class="intro">
+            Cadastre suas informações e gere seu currículo de forma rápida e organizada.
+        </p>
+        <!-- Instrução para o usuário -->
+
+        <div class="folders">
+        <!-- Container dos modelos -->
+
+            <button class="folder-card"
+                    data-model="formacao"
+                    onclick="App.goToForm('formacao')">
+                <!-- Botão do modelo 01 -->
+
+                <span class="tab">MODELO 01</span>
+                <h3>Formação Acadêmica</h3>
+                <p>Para candidatos que estão iniciando a carreira ou possuem pouca experiência profissional.</p>
+                <span class="go">Preencher este modelo</span>
+
+            </button>
+
+            <button class="folder-card"
+                    data-model="experiencia"
+                    onclick="App.goToForm('experiencia')">
+                <!-- Botão do modelo 02 -->
+
+                <span class="tab">MODELO 02</span>
+                <h3>Formação Profissional</h3>
+                <p>Para candidatos que já possuem experiência profissional.</p>
+                <span class="go">Preencher este modelo</span>
+
+            </button>
+
+        </div>
+
+        <div class="resume-banner" id="resume-banner" style="display:none">
+            <span id="resume-banner-text"></span>
+            <div class="resume-banner-actions">
+                <button type="button" class="btn" id="resume-banner-continue">Continuar preenchendo</button>
+                <button type="button" class="btn ghost" id="resume-banner-discard">Descartar</button>
+            </div>
+        </div>
+        <!-- Aviso de rascunho salvo no localStorage -->
+
+    </section>
+
+
+    <section id="screen-form" class="screen">
+    <!-- Tela do formulário -->
+
+        <div class="form-head">
+        <!-- Cabeçalho do formulário -->
+
+            <span class="chip" id="form-chip">MODELO</span>
+            <!-- Identificação do modelo -->
+
+            <h2 id="form-title">Currículo</h2>
+            <!-- Título do formulário -->
+
+            <p class="form-subtitle" id="form-subtitle">Preencha suas informações para gerar seu currículo.</p>
+
+        </div>
+
+        <div class="progress-wrap">
+            <div class="progress-track">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            <div class="progress-label" id="progress-label">Etapa 1 de 8</div>
+        </div>
+        <!-- Barra de progresso do preenchimento -->
+
+        <div id="toast-area"></div>
+        <!-- Área de mensagens de sucesso/erro -->
+
+        <form id="curriculo-form" novalidate>
+        <!-- Formulário principal -->
+
+            <!-- ===================== ETAPA: DADOS PESSOAIS ===================== -->
+            <div class="step" data-step="personal">
+
+                <div class="card">
+                    <h4>Dados pessoais</h4>
+
+                    <div class="grid">
+
+                        <div class="field full">
+                            <label>Nome completo *</label>
+                            <input id="f-nome" autocomplete="name">
+                            <div class="errmsg">Informe o nome completo (mínimo 3 letras).</div>
+                        </div>
+
+                        <div class="field">
+                            <label>Idade *</label>
+                            <input type="number" id="f-idade" min="14" max="100">
+                            <div class="errmsg">Informe uma idade válida (14 a 100).</div>
+                        </div>
+
+                        <div class="field">
+                            <label>Cidade *</label>
+                            <input id="f-cidade">
+                            <div class="errmsg">Informe a cidade.</div>
+                        </div>
+
+                        <div class="field">
+                            <label>Estado *</label>
+                            <select id="f-estado">
+                                <option value="">Selecione</option>
+                                <option>AC</option><option>AL</option><option>AP</option><option>AM</option>
+                                <option>BA</option><option>CE</option><option>DF</option><option>ES</option>
+                                <option>GO</option><option>MA</option><option>MT</option><option>MS</option>
+                                <option>MG</option><option>PA</option><option>PB</option><option>PR</option>
+                                <option>PE</option><option>PI</option><option>RJ</option><option>RN</option>
+                                <option>RS</option><option>RO</option><option>RR</option><option>SC</option>
+                                <option>SP</option><option>SE</option><option>TO</option>
+                            </select>
+                            <div class="errmsg">Selecione o estado.</div>
+                        </div>
+
+                        <div class="field full">
+                            <label>E-mail *</label>
+                            <input id="f-email" type="email" autocomplete="email">
+                            <div class="errmsg">Digite um e-mail válido.</div>
+                        </div>
+
+                        <div class="field full">
+                            <label>Telefone *</label>
+                            <input id="f-tel"
+                                   type="tel"
+                                   placeholder="(00) 00000-0000"
+                                   autocomplete="tel">
+                            <div class="errmsg">Digite um telefone válido: (00) 00000-0000.</div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+
+            <!-- ===================== ETAPA: FOTO ===================== -->
+            <div class="step" data-step="foto">
+
+                <div class="card">
+                    <h4>Foto do currículo</h4>
+                    <p class="section-hint">Opcional. Se não enviar, o currículo é gerado sem foto.</p>
+
+                    <div class="photo-row">
+
+                        <div class="booth">
+                            <div class="placeholder" id="booth-placeholder">Sem foto</div>
+
+                            <video id="video" autoplay playsinline muted style="display:none"></video>
+
+                            <img id="photo-preview" alt="Prévia da foto" style="display:none">
+                        </div>
+
+                        <div class="booth-actions">
+
+                            <input type="file"
+                                   id="f-foto-file"
+                                   accept="image/png,image/jpeg,image/jpg,image/webp"
+                                   style="display:none"
+                                   onchange="App.handleFileSelect(event)">
+
+                            <button type="button" class="btn" onclick="document.getElementById('f-foto-file').click()">
+                                Escolher da galeria
+                            </button>
+
+                            <button type="button" class="btn stamp" id="btn-camera" onclick="App.toggleCamera()">
+                                Usar câmera
+                            </button>
+
+                            <button type="button" class="btn stamp" id="btn-capture" style="display:none" onclick="App.capturePhoto()">
+                                Capturar foto
+                            </button>
+
+                            <button type="button" class="btn" id="btn-cancel-camera" style="display:none" onclick="App.stopCamera()">
+                                Cancelar
+                            </button>
+
+                            <button type="button" class="btn danger-ghost" id="btn-retake" style="display:none" onclick="App.confirmRemovePhoto()">
+                                Remover foto
+                            </button>
+
+                            <p class="hint" id="camera-hint">Limite de 2MB por imagem (JPG, PNG ou WEBP).</p>
+                            <p class="hint err-hint" id="camera-error" style="display:none"></p>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+
+            <!-- ===================== ETAPA: FORMAÇÃO ACADÊMICA ===================== -->
+            <div class="step" data-step="academic">
+
+                <div class="card">
+                    <h4>Formação acadêmica <span id="academic-req-mark">*</span></h4>
+                    <p class="section-hint" id="academic-hint">Adicione ao menos uma formação.</p>
+
+                    <div id="academic-list" class="item-list"></div>
+
+                    <div class="add-form" id="academic-add-form">
+                        <div class="grid">
+                            <div class="field full">
+                                <label>Instituição</label>
+                                <input id="add-inst" placeholder="Ex: ETEC">
+                            </div>
+                            <div class="field">
+                                <label>Curso</label>
+                                <input id="add-curso" placeholder="Ex: Desenvolvimento de Sistemas">
+                            </div>
+                            <div class="field">
+                                <label>Ano / Situação</label>
+                                <input id="add-ano" placeholder="Ex: Cursando 2º ano">
+                            </div>
+                            <div class="field full">
+                                <label>Descrição (opcional)</label>
+                                <textarea id="add-desc-academic" rows="2" placeholder="Ex: Desenvolvimento web, banco de dados, programação..."></textarea>
+                            </div>
+                        </div>
+                        <div class="errmsg" id="academic-errmsg">Preencha instituição, curso e ano.</div>
+                    </div>
+
+                    <button type="button" class="btn add-btn" id="btn-adicionar-academic">+ Adicionar formação</button>
+                </div>
+
+            </div>
+
+
+            <!-- ===================== ETAPA: EXPERIÊNCIA PROFISSIONAL ===================== -->
+            <div class="step" data-step="experience">
+
+                <div class="card">
+                    <h4>Experiência profissional <span id="exp-req-mark">*</span></h4>
+                    <p class="section-hint" id="exp-hint">Opcional — adicione experiências profissionais, caso possua.</p>
+
+                    <div id="experience-list" class="item-list"></div>
+
+                    <div class="add-form" id="experience-add-form">
+                        <div class="grid">
+                            <div class="field full">
+                                <label>Empresa</label>
+                                <input id="add-empresa" placeholder="Ex: Empresa XYZ">
+                            </div>
+                            <div class="field">
+                                <label>Cargo</label>
+                                <input id="add-cargo" placeholder="Ex: Desenvolvedor Web">
+                            </div>
+                            <div class="field">
+                                <label>Cidade</label>
+                                <input id="add-exp-cidade" placeholder="Ex: São Paulo - SP">
+                            </div>
+                            <div class="field">
+                                <label>Início</label>
+                                <input id="add-inicio" placeholder="Ex: 2024" type="month">
+                            </div>
+                            <div class="field" id="field-fim-wrap">
+                                <label>Término</label>
+                                <input id="add-fim" placeholder="Ex: 2025" type="month">
+                            </div>
+                            <div class="field full checkbox-field">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="add-atual">
+                                    Trabalho atualmente nesta empresa
+                                </label>
+                            </div>
+                            <div class="field full">
+                                <label>Descrição das atividades</label>
+                                <textarea id="add-desc-exp" rows="3" placeholder="Descreva suas principais atividades..."></textarea>
+                            </div>
+                        </div>
+                        <div class="errmsg" id="experience-errmsg">Preencha empresa, cargo e início.</div>
+                    </div>
+
+                    <button type="button" class="btn add-btn" id="btn-adicionar-experience">+ Adicionar experiência</button>
+                </div>
+
+            </div>
+
+
+            <!-- ===================== ETAPA: HABILIDADES ===================== -->
+            <div class="step" data-step="skills">
+
+                <div class="card">
+                    <h4>Habilidades</h4>
+                    <p class="section-hint">Opcional. Digite e pressione Enter, ou clique em Adicionar.</p>
+
+                    <div class="skill-input-row">
+                        <input id="f-skill-input" placeholder="Ex: JavaScript, Comunicação, Trabalho em equipe...">
+                        <button type="button" class="btn" id="btn-add-skill">Adicionar</button>
+                    </div>
+
+                    <div class="chips" id="skills-chips"></div>
+                </div>
+
+            </div>
+
+
+            <!-- ===================== ETAPA: IDIOMAS ===================== -->
+            <div class="step" data-step="languages">
+
+                <div class="card">
+                    <h4>Idiomas</h4>
+                    <p class="section-hint">Opcional.</p>
+
+                    <div id="languages-list" class="item-list"></div>
+
+                    <div class="add-form" id="languages-add-form">
+                        <div class="grid">
+                            <div class="field">
+                                <label>Idioma</label>
+                                <input id="add-idioma" placeholder="Ex: Inglês">
+                            </div>
+                            <div class="field">
+                                <label>Nível</label>
+                                <select id="add-nivel">
+                                    <option value="">Selecione</option>
+                                    <option>Básico</option>
+                                    <option>Intermediário</option>
+                                    <option>Avançado</option>
+                                    <option>Fluente</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="errmsg" id="languages-errmsg">Preencha o idioma e o nível.</div>
+                    </div>
+
+                    <button type="button" class="btn add-btn" id="btn-adicionar-language">+ Adicionar idioma</button>
+                </div>
+
+            </div>
+
+
+            <!-- ===================== ETAPA: INFORMAÇÕES ADICIONAIS ===================== -->
+            <div class="step" data-step="extra">
+
+                <div class="card">
+                    <h4>Informações adicionais</h4>
+                    <p class="section-hint">Opcional.</p>
+
+                    <div class="field full">
+                        <textarea id="f-extra" rows="5" placeholder="Digite aqui outras informações que considera importantes para o seu currículo..."></textarea>
+                    </div>
+                </div>
+
+            </div>
+
+
+            <!-- ===================== ETAPA: REVISÃO ===================== -->
+            <div class="step" data-step="review">
+
+                <div class="card">
+                    <h4>Revise seu currículo</h4>
+                    <p class="section-hint">Confira as informações antes de gerar o currículo.</p>
+
+                    <div id="review-content" class="review-content"></div>
+                </div>
+
+            </div>
+
+
+            <!-- ===================== NAVEGAÇÃO ===================== -->
+            <div class="actions-row">
+
+                <button type="button" class="btn" id="btn-voltar-step" onclick="App.previousStep()">
+                    ← Voltar
+                </button>
+
+                <button type="button" class="btn-primary" id="btn-continuar-step" onclick="App.nextStep()">
+                    Continuar →
+                </button>
+
+                <button type="submit" class="btn-primary" id="btn-gerar" style="display:none">
+                    Gerar currículo
+                </button>
+
+            </div>
+
+        </form>
+
+    </section>
+
+
+    <!-- ===================== TELA DE SUCESSO / PROTOCOLO ===================== -->
+    <section id="screen-success" class="screen">
+
+        <div class="success-card">
+            <div class="success-icon">✓</div>
+            <h2>Currículo gerado com sucesso!</h2>
+            <p>Seu protocolo é:</p>
+            <div class="protocol-number" id="protocol-number">—</div>
+
+            <div class="protocol-meta">
+                <span id="protocol-date"></span>
+                <span id="protocol-time"></span>
+            </div>
+
+            <div class="success-actions">
+                <button type="button" class="btn-primary" id="btn-gerar-pdf">Gerar PDF</button>
+                <button type="button" class="btn" id="btn-copiar-protocolo">Copiar protocolo</button>
+                <button type="button" class="btn" id="btn-novo-curriculo">Novo currículo</button>
+                <button type="button" class="btn" id="btn-voltar-inicio">Voltar ao início</button>
+            </div>
+        </div>
+
+    </section>
+
+</div>
+
+
+<canvas id="capture-canvas" style="display:none"></canvas>
+<!-- Canvas utilizado para capturar/processar a foto -->
+
+<div id="confirm-modal" class="modal-overlay" style="display:none">
+    <div class="modal-box">
+        <p id="confirm-modal-text">Tem certeza?</p>
+        <div class="modal-actions">
+            <button type="button" class="btn" id="confirm-modal-cancel">Cancelar</button>
+            <button type="button" class="btn-primary danger" id="confirm-modal-ok">Confirmar</button>
+        </div>
+    </div>
+</div>
+<!-- Modal genérico de confirmação (exclusão de itens, foto, etc.) -->
+
+<script src="script.js"></script>
+<!-- Importa o JavaScript principal do projeto -->
+
+</body>
+</html>
